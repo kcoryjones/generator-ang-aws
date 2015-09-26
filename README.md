@@ -1,4 +1,4 @@
-# generator-lambdangular [![Build Status](https://secure.travis-ci.org/kcoryjones/generator-lambdangular.png?branch=master)](https://travis-ci.org/kcoryjones/generator-lambdangular)
+# generator-ang-aws [![Build Status](https://secure.travis-ci.org/kcoryjones/generator-ang-aws.png?branch=master)](https://travis-ci.org/kcoryjones/generator-ang-aws)
 
 > [Yeoman](http://yeoman.io) generator
 
@@ -23,16 +23,16 @@ npm install -g yo
 
 Yeoman travels light. He didn't pack any generators when he moved in. You can think of a generator like a plug-in. You get to choose what type of application you wish to create, such as a Backbone application or even a Chrome extension.
 
-To install generator-lambdangular from npm, run:
+To install generator-ang-aws from npm, run:
 
 ```bash
-npm install -g generator-lambdangular
+npm install -g generator-ang-aws
 ```
 
 Finally, initiate the generator:
 
 ```bash
-yo lambdangular
+yo ang-aws
 ```
 
 ### Getting To Know Yeoman
