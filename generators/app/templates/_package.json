@@ -1,0 +1,10 @@
+{
+  "name": "<%= _.camelCase(appname) %>",
+  "version": "0.0.0",
+  "devDependencies": {
+    
+  },
+  "scripts": {
+    
+  }
+}

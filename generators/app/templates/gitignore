@@ -1,0 +1,7 @@
+.vagrant/
+temp/
+dist/
+node_modules/
+_SpecRunner.html
+.DS_Store
+test-results.xml

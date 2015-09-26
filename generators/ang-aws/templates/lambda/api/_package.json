@@ -1,0 +1,21 @@
+{
+  "name": "ang-aws-lambda-api",
+  "version": "0.0.0",
+  "description": "api portion of the aws lambda function in ang-aws",
+  "license": "MIT",
+  "main": "index.js",
+  "author": {
+    "name": "K Cory Jones",
+    "email": "kcoryjones@gmail.com",
+    "url": "https://github.com/kcoryjones"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1.49",
+    "bcrypt-nodejs": "0.0.3",
+    "express": "^4.13.3",
+    "jsonwebtoken": "^5.0.5",
+    "node-mocks-http": "^1.4.3",
+    "vogels": "^0.12.0"
+  },
+  "devDependencies": {}
+}
