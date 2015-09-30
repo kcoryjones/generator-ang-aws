@@ -6,7 +6,7 @@ angular.module('<%= _.camelCase(appname) %>').factory('angAws',function($q) {
 	//set our defaults
 	angAws.defaults = {
 		appname: '<%= _.camelCase(appname) %>',
-		region: '<%= appname %>',
+		region: '<%= region %>',
 		IdentityPoolId: "<%= identityPoolId %>"
 	}
 	//default credentials - unauthenticated access: login function only
