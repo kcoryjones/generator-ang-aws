@@ -1,3 +1,5 @@
-angular.module('<%= appname %>').controller('<%= _.camelCase(name) + "Ctrl" %>',function($scope){
-
-});
+angular.module('<%= appname %>').controller('<%= _.camelCase(name) + "Ctrl" %>', ['$scope', 
+	function($scope) {
+		
+	}
+]);
