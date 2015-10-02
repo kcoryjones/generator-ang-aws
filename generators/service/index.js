@@ -30,7 +30,7 @@ module.exports = yeoman.generators.Base.extend({
         type: 'input',
         name: 'path',
         message: 'Where would you like to create the service files?',
-        default: 'services/'
+        default: 'service/'
       }
     ];
 

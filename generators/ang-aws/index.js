@@ -422,7 +422,7 @@ module.exports = yeoman.generators.Base.extend({
                                       that.log('updating index.html...');
                                       var indexHtml = that.fs.read('app/index.html');
                                       var marker = '<!-- Add New Component JS Above (Do not remove this line) -->';
-                                      indexHtml = indexHtml.replace(marker, '<script src="/service/angAws.js"></script>' + "\n  " + marker);
+                                      indexHtml = indexHtml.replace(marker, '<script src="service/angAws.js"></script>' + "\n  " + marker);
                                       that.fs.write('app/index.html', indexHtml);
                                       // write angAws.js
                                       that.log('writing angAws...');
