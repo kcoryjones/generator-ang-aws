@@ -15,7 +15,7 @@ var secret = config.secret;
 
 // dynamodb database connection
 vogels.AWS.config.update({region: config.region});
-var dynamodb = new AWS.DynamoDB();
+var dynamodb = new AWS.DynamoDB({region: config.region});
 vogels.dynamoDriver(dynamodb);
 
 // some environment variables
