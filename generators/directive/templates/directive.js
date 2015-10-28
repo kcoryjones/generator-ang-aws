@@ -6,7 +6,7 @@ angular.module('<%= appname %>').directive('<%= _.camelCase(name) %>', function(
         scope: {
 
         },
-        templateUrl: '<%= path %><% name %>.html',
+        templateUrl: '<%= path %><%= name %>.html',
     <% } %>
     <% if (directiveType=='simple') { %>
         restrict: 'A',
