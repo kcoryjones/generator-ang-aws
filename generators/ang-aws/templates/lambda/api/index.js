@@ -1,5 +1,5 @@
-var express = require('express'),
-	app = express(),
+var app = require('express')(),
+	bodyParser = require('body-parser'),
 	path = require('path'),
 	fs = require('fs'),
 	vogels = require('vogels'),
@@ -23,16 +23,15 @@ if (!lambdaEnv) {
 	app.set('port', process.env.PORT || 3002);
 }
 
-// dynamically include routes (Controller)
-fs.readdirSync(__dirname + '/controllers').forEach(function (file) {
-	if (file.substr(-3) == '.js') {
-		route = require('./controllers/' + file);
-		route.controller(app);
-	}
+//add cross-domain CORS headers
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
 });
 
 //authorization checking
-app.use(function (req, res, next) {
+function authorize(req, res, next) {
 	console.log('checking authorization header');
 	if (!req.headers.authorization) {
 		res.status(401);
@@ -46,6 +45,14 @@ app.use(function (req, res, next) {
 			res.status(401);
 			handleSend(err, null, req, res);
 		}
+	}
+};
+
+// dynamically include routes (Controller)
+fs.readdirSync(__dirname + '/controllers').forEach(function (file) {
+	if (file.substr(-3) == '.js') {
+		route = require('./controllers/' + file);
+		route.controller(app);
 	}
 });
 
