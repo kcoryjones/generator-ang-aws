@@ -3,12 +3,20 @@ angular.module('<%= _.camelCase(appname) %>').factory('angAws',function($q) {
 	//create our service object
 	var angAws = {};
 
-	//AWS config
-	AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-		IdentityPoolId: '<%= identityPoolId %>'
+	//set our defaults
+	angAws.defaults = {
+		appname: '<%= _.camelCase(appname) %>',
+		region: '<%= region %>',
+		IdentityPoolId: "<%= identityPoolId %>"
+	}
+	//default credentials - unauthenticated access: login function only
+	angAws.credentials = new AWS.CognitoIdentityCredentials({
+		IdentityPoolId: angAws.defaults.IdentityPoolId
 	});
-	AWS.config.region = '<%= region %>';
-	//got to here
+	AWS.config.credentials = angAws.credentials;
+	angAws.params = JSON.parse(JSON.stringify(angAws.credentials.params)); //for debugging
+	AWS.config.region = angAws.defaults.region;
+
 
 	//BEGIN PRIVATE FUNCTIONS
 	//get cognito access
@@ -102,7 +110,7 @@ angular.module('<%= _.camelCase(appname) %>').factory('angAws',function($q) {
 			payload.token = localStorage.getItem('jwt');
 		if (angAws.credentials.params.IdentityId)
 			payload.identityId = angAws.credentials.params.IdentityId;
-		angAws._lambdaInvoke(angAws.defaults.region, '<%= _.camelCase(appname) %>-login', 'RequestResponse', payload).then(function(jwt) {
+		angAws._lambdaInvoke(angAws.defaults.region, angAws.defaults.appname + '-login', 'RequestResponse', payload).then(function(jwt) {
 			localStorage.setItem('jwt', jwt);
 			deferred.resolve({message:'setjwt success'});
 		}, function(error) {
