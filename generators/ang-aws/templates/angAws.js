@@ -1,4 +1,4 @@
-angular.module('<%= _.camelCase(appname) %>').factory('angAws',function($q) {
+angular.module('<%= _.camelCase(appname) %>').factory('angAws',function($q, $httpProvider) {
 	
 	//create our service object
 	var angAws = {};
@@ -45,7 +45,30 @@ angular.module('<%= _.camelCase(appname) %>').factory('angAws',function($q) {
 		});
 		return deferred.promise;
 	}
-	
+
 	//return service object
 	return angAws;
+}).config(function($httpProvider) {
+	//register interceptor
+    $httpProvider.interceptors.push(function(angAws) {
+        if (angAws.intercept) {
+            return {
+               'request': function(config) {
+                    //alert(JSON.stringify(config));
+                    if (config.url.substring(0, 17) == "192.168.7.24:3002") {
+                        alert('request intercepted');
+                    }
+                    return config;
+                },
+                'response': function(response) {
+                    //alert(JSON.stringify(response));
+                    if (response.config.url.substring(0, 17) == "192.168.7.24:3002") {
+                        alert('response intercepted');
+                    }
+                    return response;
+                }
+            };
+        }
+        return {};
+    });
 });
