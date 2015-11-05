@@ -247,197 +247,110 @@ module.exports = yeoman.generators.Base.extend({
                   that.log('Unauthenticated role created');
                   that.log(data);
                   var unauthenticatedArn = data.Role.Arn;
-                  var createAuthenticatedRoleParams = {
-                    AssumeRolePolicyDocument: '{"Version":"2012-10-17","Statement":[{"Sid":"","Effect":"Allow","Principal":{"Federated":"cognito-identity.amazonaws.com"},"Action":"sts:AssumeRoleWithWebIdentity","Condition":{"StringEquals":{"cognito-identity.amazonaws.com:aud":"' + identityPoolId + '"},"ForAnyValue:StringLike":{"cognito-identity.amazonaws.com:amr":"authenticated"}}}]}',
-                    RoleName: that.prompts.appname + '-role-authenticated'
-                  };
-                  that.log('Creating identity pool authenticated role');
-                  iam.createRole(createAuthenticatedRoleParams, function(err, data) {
+                  fs.writeSync(fs.openSync(that.destinationPath('lambda/api/config.js'), 'w'), [
+                    "var config = {};",
+                    "config.region = '" + that.prompts.region + "';",
+                    "config.secret = '" + that.prompts.secret + "';",
+                    "config.TableName = '" + createTableParams.TableName + "';",
+                    "config.IdentityPoolId = '" + that.prompts.identityPoolId + "';",
+                    "config.DeveloperProviderName = '" + createIdentityPoolParams.DeveloperProviderName + "';",
+                    "module.exports = config;"
+                  ].join("\n"));
+
+                  cmd = 'cd ' + that.destinationPath('lambda/api') + ' && zip -r api.zip . -x "*.zip"';
+                  that.log('Zipping api lambda function');
+                  exec(cmd, function(err, stdout, stderr) {
                     if (err) {
-                      that.log('There was an error creating Authenticated role');
+                      that.log('There was an error zipping lambda api');
+                      that.log(stderr);
+                      that.env.error();
+                    }
+                  });
+                  fs.readFile(that.destinationPath('lambda/api/api.zip'), function (err, apiFileBuffer) {
+                    if (err) {
+                      that.log('There was an error reading login zip file');
                       that.log(err.message);
                       that.env.error();
                     }
-                    that.log('Authenticated role created');
-                    that.log(data);
-                    var authenticatedArn = data.Role.Arn;
-                    fs.writeSync(fs.openSync(that.destinationPath('lambda/login/config.js'),'w'), [
-                      "var config = {};",
-                      "config.region = '" + that.prompts.region + "';",
-                      "config.secret = '" + that.prompts.secret + "';",
-                      "config.TableName = '" + createTableParams.TableName + "';",
-                      "config.IdentityPoolId = '" + that.prompts.identityPoolId + "';",
-                      "config.DeveloperProviderName = '" + createIdentityPoolParams.DeveloperProviderName + "';",
-                      "module.exports = config;"
-                    ].join("\n"));
-                    fs.writeSync(fs.openSync(that.destinationPath('lambda/api/config.js'), 'w'), [
-                      "var config = {};",
-                      "config.region = '" + that.prompts.region + "';",
-                      "config.secret = '" + that.prompts.secret + "';",
-                      "module.exports = config;"
-                    ].join("\n"));
-                    var cmd = 'cd ' + that.destinationPath('lambda/login') + ' && zip -r login.zip . -x "*.zip"';
-                    that.log('Zipping login lambda function');
-                    exec(cmd, function(err, stdout, stderr) {
+                    var createLambdaApiParams = {
+                      Code: {
+                        ZipFile:  apiFileBuffer
+                      },
+                      FunctionName: that.prompts.appname + '-api',
+                      Handler: 'index.handler',
+                      Role: lambdaArn,
+                      Runtime: 'nodejs',
+                      Description: 'Handles API calls',
+                      MemorySize: 1536,
+                      Timeout: 60
+                    };
+                    that.log('Creating api lambda function');
+                    lambda.createFunction(createLambdaApiParams, function(err, data) {
                       if (err) {
-                        that.log('There was an error zipping lambda login');
-                        that.log(stderr);
-                        that.env.error();
-                      }
-                    });
-                    cmd = 'cd ' + that.destinationPath('lambda/api') + ' && zip -r api.zip . -x "*.zip"';
-                    that.log('Zipping api lambda function');
-                    exec(cmd, function(err, stdout, stderr) {
-                      if (err) {
-                        that.log('There was an error zipping lambda api');
-                        that.log(stderr);
-                        that.env.error();
-                      }
-                    });
-                    fs.readFile(that.destinationPath('lambda/login/login.zip'), function (err, loginFileBuffer) {
-                      if (err) {
-                        that.log('There was an error reading login zip file');
+                        that.log('There was an error creating api lambda function');
                         that.log(err.message);
                         that.env.error();
                       }
-                      var lambda = new AWS.Lambda({apiVersion: '2015-03-31'});
-                      var createLambdaLoginParams = {
-                        Code: {
-                          ZipFile: loginFileBuffer
-                        },
-                        FunctionName: that.prompts.appname + '-login',
-                        Handler: 'index.handler',
-                        Role: lambdaArn,
-                        Runtime: 'nodejs',
-                        Description: 'Checks user email and password and returns cognito identity token',
-                        MemorySize: 1536,
-                        Timeout: 5
+                      that.log('Api lambda function created');
+                      that.log(data);
+                      var apiLambdaArn = data.FunctionArn;
+                      var putPolicyRoleLambdaParams = {
+                        PolicyDocument: '{"Version":"2012-10-17","Statement":[{"Action":["dynamodb:*"],"Effect":"Allow","Resource":"*"},{"Effect":"Allow","Action":["cognito-identity:GetOpenIdTokenForDeveloperIdentity"],"Resource":"*"}]}',
+                        PolicyName: that.prompts.appname + '-policy-lambda',
+                        RoleName: that.prompts.appname + '-role-lambda'
                       };
-                      that.log('Creating login lambda function');
-                      lambda.createFunction(createLambdaLoginParams, function(err, data) {
+                      that.log('Putting dynamodb and cognito access policy for lambda role');
+                      iam.putRolePolicy(putPolicyRoleLambdaParams, function(err, data) {  
                         if (err) {
-                          that.log('There was an error creating login lambda function');
+                          that.log('There was an error putting policy');
                           that.log(err.message);
                           that.env.error();
                         }
-                        that.log('Login lambda function created');
+                        that.log('Lambda Role policy put');
                         that.log(data);
-                        var loginLambdaArn = data.FunctionArn;
-                        fs.readFile(that.destinationPath('lambda/api/api.zip'), function (err, apiFileBuffer) {
+                        var putPolicyLoginLambdaParams = {
+                          PolicyDocument: '{"Version":"2012-10-17","Statement":[{"Sid":"Stmt1437017197000","Effect":"Allow","Action":["lambda:InvokeFunction"],"Resource":["' + apiLambdaArn + '"]}]}',
+                          PolicyName: that.prompts.appname + '-policy-lambda-login',
+                          RoleName: that.prompts.appname + '-role-unauthenticated'
+                        };
+                        that.log('Putting invoke login lambda policy for unauthenticated role');
+                        iam.putRolePolicy(putPolicyLoginLambdaParams, function(err, data) {
                           if (err) {
-                            that.log('There was an error reading login zip file');
+                            that.log('There was an error putting policy');
                             that.log(err.message);
                             that.env.error();
                           }
-                          var createLambdaApiParams = {
-                            Code: {
-                              ZipFile:  apiFileBuffer
-                            },
-                            FunctionName: that.prompts.appname + '-api',
-                            Handler: 'index.handler',
-                            Role: lambdaArn,
-                            Runtime: 'nodejs',
-                            Description: 'Handles API calls',
-                            MemorySize: 1536,
-                            Timeout: 60
+                          that.log('Invoke login lambda policy put');
+                          that.log(data);
+                          var setIdentityPoolRolesParams = {
+                            IdentityPoolId: identityPoolId,
+                            Roles: {
+                              unauthenticated: unauthenticatedArn
+                            }
                           };
-                          that.log('Creating api lambda function');
-                          lambda.createFunction(createLambdaApiParams, function(err, data) {
+                          cognitoidentity.setIdentityPoolRoles(setIdentityPoolRolesParams, function(err, data) {
                             if (err) {
-                              that.log('There was an error creating api lambda function');
+                              that.log('There was an error setting identity pool roles');
                               that.log(err.message);
                               that.env.error();
                             }
-                            that.log('Api lambda function created');
+                            that.log('Identity pool roles set');
                             that.log(data);
-                            var apiLambdaArn = data.FunctionArn;
-                            var putPolicyRoleLambdaParams = {
-                              PolicyDocument: '{"Version":"2012-10-17","Statement":[{"Action":["dynamodb:*"],"Effect":"Allow","Resource":"*"},{"Effect":"Allow","Action":["cognito-identity:GetOpenIdTokenForDeveloperIdentity"],"Resource":"*"}]}',
-                              PolicyName: that.prompts.appname + '-policy-lambda',
-                              RoleName: that.prompts.appname + '-role-lambda'
-                            };
-                            that.log('Putting dynamodb and cognito access policy for lambda role');
-                            iam.putRolePolicy(putPolicyRoleLambdaParams, function(err, data) {  
-                              if (err) {
-                                that.log('There was an error putting policy');
-                                that.log(err.message);
-                                that.env.error();
-                              }
-                              that.log('Lambda Role policy put');
-                              that.log(data);
-                              var putPolicyLoginLambdaParams = {
-                                PolicyDocument: '{"Version":"2012-10-17","Statement":[{"Sid":"Stmt1437017197000","Effect":"Allow","Action":["lambda:InvokeFunction"],"Resource":["' + loginLambdaArn + '"]}]}',
-                                PolicyName: that.prompts.appname + '-policy-lambda-login',
-                                RoleName: that.prompts.appname + '-role-unauthenticated'
-                              };
-                              that.log('Putting invoke login lambda policy for unauthenticated role');
-                              iam.putRolePolicy(putPolicyLoginLambdaParams, function(err, data) {
-                                if (err) {
-                                  that.log('There was an error putting policy');
-                                  that.log(err.message);
-                                  that.env.error();
-                                }
-                                that.log('Invoke login lambda policy put');
-                                that.log(data);
-                                putPolicyLoginLambdaParams.RoleName = that.prompts.appname + '-role-authenticated';
-                                that.log('Putting invoke login lambda policy for authenticated role');
-                                iam.putRolePolicy(putPolicyLoginLambdaParams, function(err, data) {
-                                  if (err) {
-                                    that.log('There was an error putting policy');
-                                    that.log(err.message);
-                                    that.env.error();
-                                  }
-                                  that.log('Invoke login lambda policy put');
-                                  that.log(data);
-                                  var putPolicyApiLambdaParams = {
-                                    PolicyDocument: '{"Version":"2012-10-17","Statement":[{"Sid":"Stmt1437017197000","Effect":"Allow","Action":["lambda:InvokeFunction"],"Resource":["' + apiLambdaArn + '"]}]}',
-                                    PolicyName: that.prompts.appname + '-policy-lambda-api',
-                                    RoleName: that.prompts.appname + '-role-authenticated'
-                                  };
-                                  that.log('Putting invoke api lambda policy for authenticated role');
-                                  iam.putRolePolicy(putPolicyApiLambdaParams, function(err, data) {
-                                    if (err) {
-                                      that.log('There was an error putting policy');
-                                      that.log(err.message);
-                                      that.env.error();
-                                    }
-                                    that.log('Invoke api lambda policy put');
-                                    that.log(data);
-                                    var setIdentityPoolRolesParams = {
-                                      IdentityPoolId: identityPoolId,
-                                      Roles: {
-                                        unauthenticated: unauthenticatedArn,
-                                        authenticated: authenticatedArn
-                                      }
-                                    };
-                                    cognitoidentity.setIdentityPoolRoles(setIdentityPoolRolesParams, function(err, data) {
-                                      if (err) {
-                                        that.log('There was an error setting identity pool roles');
-                                        that.log(err.message);
-                                        that.env.error();
-                                      }
-                                      that.log('Identity pool roles set');
-                                      that.log(data);
-                                      // update index.html
-                                      that.log('updating index.html...');
-                                      var indexHtml = that.fs.read('app/index.html');
-                                      var marker = '<!-- Add New Component JS Above (Do not remove this line) -->';
-                                      indexHtml = indexHtml.replace(marker, '<script src="service/angAws.js"></script>' + "\n  " + marker);
-                                      that.fs.write('app/index.html', indexHtml);
-                                      // write angAws.js
-                                      that.log('writing angAws...');
-                                      that.fs.copyTpl(
-                                        that.templatePath('angAws.js'),
-                                        that.destinationPath('app/service/angAws.js'),
-                                        that.prompts
-                                      );
-                                      that.log('Wooo, that was long. Everything is set up now though!');
-                                      done();
-                                    });
-                                  });
-                                });
-                              });
-                            });
+                            // update index.html
+                            that.log('updating index.html...');
+                            var indexHtml = that.fs.read('app/index.html');
+                            var marker = '<!-- Add New Component JS Above (Do not remove this line) -->';
+                            indexHtml = indexHtml.replace(marker, '<script src="service/angAws.js"></script>' + "\n  " + marker);
+                            that.fs.write('app/index.html', indexHtml);
+                            // write angAws.js
+                            that.log('writing angAws...');
+                            that.fs.copyTpl(
+                              that.templatePath('angAws.js'),
+                              that.destinationPath('app/service/angAws.js'),
+                              that.prompts
+                            );
+                            that.log('Wooo, that was long. Everything is set up now though!');
+                            done();
                           });
                         });
                       });
