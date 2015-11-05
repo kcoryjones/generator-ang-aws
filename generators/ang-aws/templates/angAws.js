@@ -48,7 +48,9 @@ angular.module('<%= _.camelCase(appname) %>').factory('angAws',function($q, $htt
 
 	//return service object
 	return angAws;
+
 }).config(function($httpProvider) {
+
 	//register interceptor
     $httpProvider.interceptors.push(function(angAws) {
         if (angAws.intercept) {
@@ -71,4 +73,5 @@ angular.module('<%= _.camelCase(appname) %>').factory('angAws',function($q, $htt
         }
         return {};
     });
+    
 });
