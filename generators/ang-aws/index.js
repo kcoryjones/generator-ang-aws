@@ -269,6 +269,7 @@ module.exports = yeoman.generators.Base.extend({
                       Timeout: 60
                     };
                     that.log('Creating api lambda function');
+                    var lambda = new AWS.Lambda();
                     lambda.createFunction(createLambdaApiParams, function(err, data) {
                       if (err) {
                         that.log('There was an error creating api lambda function');
