@@ -101,14 +101,9 @@ module.exports = yeoman.generators.Base.extend({
       var that = this;
       //make all our directories
       fs.mkdirSync(this.destinationPath('lambda'));
-      fs.mkdirSync(this.destinationPath('lambda/login'));
       fs.mkdirSync(this.destinationPath('lambda/api'));
       fs.mkdirSync(this.destinationPath('lambda/api/controllers'));
       fs.mkdirSync(this.destinationPath('lambda/api/models'));
-      fs.writeFileSync(
-        this.destinationPath('lambda/login/index.js'),
-        this.fs.read(this.templatePath('lambda/login/index.js'))
-      );
       fs.writeFileSync(
         this.destinationPath('lambda/api/index.js'),
         this.fs.read(this.templatePath('lambda/api/index.js'))
@@ -125,17 +120,7 @@ module.exports = yeoman.generators.Base.extend({
 
     lambdaDependencies: function() {
       var that = this;
-      // run npm install for lambda/login/ and lambda/api
-      that.log('Updating lambda login dependencies...');
-      var loginCmd = 'sudo npm update --prefix=' + that.destinationPath('lambda/login');
-      exec(loginCmd, function(err, stdout, stderr) {
-        if (err) {
-          that.log('There was an error');
-          that.log(stderr);
-          that.env.error();
-        }
-        that.log(stdout);
-      });
+      // run npm install for lambda/api
       that.log('Updating lambda api dependencies...');
       var apiCmd = 'sudo npm update --prefix=' + that.destinationPath('lambda/api');
       exec(apiCmd, function(err, stdout, stderr) {
@@ -256,8 +241,7 @@ module.exports = yeoman.generators.Base.extend({
                     "config.DeveloperProviderName = '" + createIdentityPoolParams.DeveloperProviderName + "';",
                     "module.exports = config;"
                   ].join("\n"));
-
-                  cmd = 'cd ' + that.destinationPath('lambda/api') + ' && zip -r api.zip . -x "*.zip"';
+                  var cmd = 'cd ' + that.destinationPath('lambda/api') + ' && zip -r api.zip . -x "*.zip"';
                   that.log('Zipping api lambda function');
                   exec(cmd, function(err, stdout, stderr) {
                     if (err) {
