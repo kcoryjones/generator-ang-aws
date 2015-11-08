@@ -1,7 +1,7 @@
 {
   "name": "ang-aws-lambda-api",
   "version": "0.0.0",
-  "description": "api portion of the aws lambda function in ang-aws",
+  "description": "aws lambda api function",
   "license": "MIT",
   "main": "index.js",
   "author": {

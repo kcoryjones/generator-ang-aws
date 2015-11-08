@@ -72,9 +72,9 @@ module.exports = yeoman.generators.Base.extend({
       var appJs = this.fs.read('app/app.js');
       var marker = '/* Add New States Above (Do not remove this line) */';
       var state = "$stateProvider.state('" + this.prompts.name + "', {" + "\n" +
-        "        url: '" + this.prompts.routeUrl + "'," + "\n" +
-        "        templateUrl: '" + this.prompts.path + this.prompts.name + ".html'" + "\n" +
-      "  });";
+        "   url: '" + this.prompts.routeUrl + "'," + "\n" +
+        "   templateUrl: '" + this.prompts.path + this.prompts.name + ".html'" + "\n" +
+        " });";
       appJs = appJs.replace(marker, state + "\n  " + marker);
       this.fs.write('app/app.js', appJs);
     },

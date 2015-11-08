@@ -1,4 +1,4 @@
-angular.module('<%= _.camelCase(appname) %>').factory('angAws',function($q, $httpProvider) {
+angular.module('<%= _.camelCase(appname) %>').factory('angAws',function($q) {
 	
 	//create our service object
 	var angAws = {};
