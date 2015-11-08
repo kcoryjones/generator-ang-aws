@@ -105,6 +105,10 @@ module.exports = yeoman.generators.Base.extend({
       fs.mkdirSync(this.destinationPath('lambda/api/controllers'));
       fs.mkdirSync(this.destinationPath('lambda/api/models'));
       fs.writeFileSync(
+        this.destinationPath('lambda/api/package.json'),
+        this.fs.read(this.templatePath('lambda/api/_package.json'))
+      );
+      fs.writeFileSync(
         this.destinationPath('lambda/api/index.js'),
         this.fs.read(this.templatePath('lambda/api/index.js'))
       );
