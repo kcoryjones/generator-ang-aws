@@ -1,4 +1,4 @@
-angular.module('albumade').factory('api',function(angAws, $http) {
+angular.module('<%= _.camelCase(appname) %>').factory('api',function(angAws, $http) {
     //create our service object
 	var api = {};
 
