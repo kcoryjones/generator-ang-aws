@@ -256,7 +256,7 @@ module.exports = yeoman.generators.Base.extend({
                   });
                   fs.readFile(that.destinationPath('lambda/api/api.zip'), function (err, apiFileBuffer) {
                     if (err) {
-                      that.log('There was an error reading login zip file');
+                      that.log('There was an error reading api zip file');
                       that.log(err.message);
                       that.env.error();
                     }
@@ -297,19 +297,19 @@ module.exports = yeoman.generators.Base.extend({
                         }
                         that.log('Lambda Role policy put');
                         that.log(data);
-                        var putPolicyLoginLambdaParams = {
+                        var putPolicyApiLambdaParams = {
                           PolicyDocument: '{"Version":"2012-10-17","Statement":[{"Sid":"Stmt1437017197000","Effect":"Allow","Action":["lambda:InvokeFunction"],"Resource":["' + apiLambdaArn + '"]}]}',
-                          PolicyName: that.prompts.appname + '-policy-lambda-login',
+                          PolicyName: that.prompts.appname + '-policy-lambda-api',
                           RoleName: that.prompts.appname + '-role-unauthenticated'
                         };
-                        that.log('Putting invoke login lambda policy for unauthenticated role');
-                        iam.putRolePolicy(putPolicyLoginLambdaParams, function(err, data) {
+                        that.log('Putting invoke api lambda policy for unauthenticated role');
+                        iam.putRolePolicy(putPolicyApiLambdaParams, function(err, data) {
                           if (err) {
                             that.log('There was an error putting policy');
                             that.log(err.message);
                             that.env.error();
                           }
-                          that.log('Invoke login lambda policy put');
+                          that.log('Invoke api lambda policy put');
                           that.log(data);
                           var setIdentityPoolRolesParams = {
                             IdentityPoolId: identityPoolId,
