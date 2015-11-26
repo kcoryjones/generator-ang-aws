@@ -1,4 +1,5 @@
 'use strict';
+
 var yeoman = require('yeoman-generator'),
     chalk = require('chalk'),
     yosay = require('yosay'),
@@ -329,13 +330,24 @@ module.exports = yeoman.generators.Base.extend({
                             that.log('updating index.html...');
                             var indexHtml = that.fs.read('app/index.html');
                             var marker = '<!-- Add New Component JS Above (Do not remove this line) -->';
-                            indexHtml = indexHtml.replace(marker, '<script src="service/angAws.js"></script>' + "\n  " + '<script src="service/angAws.js"></script>' + "\n  " + marker);
+                            indexHtml = indexHtml.replace(marker, 
+                              '<script src="service/ang-aws.factory.js"></script>' + "\n  " +
+                              '<script src="service/ang-aws.config.js"></script>' + "\n  " +
+                              '<script src="service/api.js"></script>' + "\n  " +
+                              marker);
                             that.fs.write('app/index.html', indexHtml);
                             // write angAws service
                             that.log('writing angAws service...');
                             that.fs.copyTpl(
-                              that.templatePath('angAws.js'),
-                              that.destinationPath('app/service/angAws.js'),
+                              that.templatePath('ang-aws.factory.js'),
+                              that.destinationPath('app/service/ang-aws.factory.js'),
+                              that.prompts
+                            );
+                            // write angAws interceptor
+                            that.log('writing angAws config (interceptor)...');
+                            that.fs.copyTpl(
+                              that.templatePath('ang-aws.config.js'),
+                              that.destinationPath('app/service/ang-aws.config.js'),
                               that.prompts
                             );
                             // write api service
