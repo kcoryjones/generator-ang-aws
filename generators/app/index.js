@@ -47,8 +47,18 @@ module.exports = yeoman.generators.Base.extend({
         this.prompts
       );
       this.fs.copyTpl(
-        this.templatePath('_app.js'),
-        this.destinationPath('app/app.js'),
+        this.templatePath('_app.module.js'),
+        this.destinationPath('app/app.module.js'),
+        this.prompts
+      );
+      this.fs.copyTpl(
+        this.templatePath('_app.routes.js'),
+        this.destinationPath('app/app.routes.js'),
+        this.prompts
+      );
+      this.fs.copyTpl(
+        this.templatePath('_app.run.js'),
+        this.destinationPath('app/app.run.js'),
         this.prompts
       );
       this.fs.copyTpl(
