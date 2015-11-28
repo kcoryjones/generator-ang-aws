@@ -49,7 +49,7 @@ module.exports = yeoman.generators.Base.extend({
         {
           type: 'input',
           name: 'path',
-          message: 'Where would you like to create the directive files?',
+          message: 'In what folder would you like to create the directive files?',
           default: 'directive/'+ this.prompts.name + '/'
         },
       ];
@@ -72,7 +72,7 @@ module.exports = yeoman.generators.Base.extend({
     updateIndexHtml: function() {
       var indexHtml = this.fs.read('app/index.html');
       var marker = '<!-- Add New Component JS Above (Do not remove this line) -->';
-      indexHtml = indexHtml.replace(marker, '<script src="' + this.prompts.path + this.prompts.name + '.js"></script>' + "\n  " + marker);
+      indexHtml = indexHtml.replace(marker, '<script src="' + this.prompts.path + this.prompts.name + '.directive.js"></script>' + "\n  " + marker);
       this.fs.write('app/index.html', indexHtml);
     },
 
@@ -80,7 +80,7 @@ module.exports = yeoman.generators.Base.extend({
       if (this.prompts.directiveType=='complex') {
         var appLess = this.fs.read('app/app.less');
         var marker = '/* Add Component LESS Above (Do not remove this line) */';
-        appLess = appLess.replace(marker, '@import "' + this.prompts.path + this.prompts.name + '.less";' + "\n" + marker);
+        appLess = appLess.replace(marker, '@import "' + this.prompts.path + this.prompts.name + '.directive.less";' + "\n" + marker);
         this.fs.write('app/app.less', appLess);
       }
     },
@@ -88,7 +88,7 @@ module.exports = yeoman.generators.Base.extend({
     directiveJs: function() {
       this.fs.copyTpl(
         this.templatePath('directive.js'),
-        this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.js'),
+        this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.directive.js'),
         this.prompts
       );
     },
@@ -96,7 +96,7 @@ module.exports = yeoman.generators.Base.extend({
     directiveTest: function() {
       this.fs.copyTpl(
         this.templatePath('directive-spec.js'),
-        this.destinationPath('app/' + this.prompts.path + this.prompts.name + '-spec.js'),
+        this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.directive.spec.js'),
         this.prompts
       );
     },
@@ -105,7 +105,7 @@ module.exports = yeoman.generators.Base.extend({
       if (this.prompts.directiveType=='complex') {
         this.fs.copyTpl(
           this.templatePath('directive.html'),
-          this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.html'),
+          this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.directive.html'),
           this.prompts
         );
       }
@@ -115,7 +115,7 @@ module.exports = yeoman.generators.Base.extend({
       if (this.prompts.directiveType=='complex') {
         this.fs.copyTpl(
           this.templatePath('directive.less'),
-          this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.less'),
+          this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.directive.less'),
           this.prompts
         );
       }
