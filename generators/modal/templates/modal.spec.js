@@ -1,4 +1,4 @@
-describe('<%= _.camelCase(name) + "Ctrl" %>', function() {
+describe('<%= _.capitalize(_.camelCase(name)) %>Controller', function() {
 
   beforeEach(module('<%= appname %>'));
 
@@ -6,7 +6,7 @@ describe('<%= _.camelCase(name) + "Ctrl" %>', function() {
 
   beforeEach(inject(function($rootScope, $controller) {
     scope = $rootScope.$new();
-    ctrl = $controller('<%= _.camelCase(name) + "Ctrl" %>', {$scope: scope});
+    ctrl = $controller('<%= _capitalize(_.camelCase(name)) %>Controller', {$scope: scope});
   }));
 
   it('should ...', inject(function() {

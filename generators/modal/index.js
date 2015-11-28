@@ -34,7 +34,7 @@ module.exports = yeoman.generators.Base.extend({
         {
           type: 'input',
           name: 'path',
-          message: 'Where would you like to create the modal files?',
+          message: 'In what folder would you like to create the modal files?',
           default: 'modal/'+ this.prompts.name + '/'
         }
       ];
@@ -57,29 +57,29 @@ module.exports = yeoman.generators.Base.extend({
     updateIndexHtml: function() {
       var indexHtml = this.fs.read('app/index.html');
       var marker = '<!-- Add New Component JS Above (Do not remove this line) -->';
-      indexHtml = indexHtml.replace(marker, '<script src="' + this.prompts.path + this.prompts.name + '.js"></script>' + "\n  " + marker);
+      indexHtml = indexHtml.replace(marker, '<script src="' + this.prompts.path + this.prompts.name + '.modal.js"></script>' + "\n  " + marker);
       this.fs.write('app/index.html', indexHtml);
     },
 
     updateAppLess: function() {
       var appLess = this.fs.read('app/app.less');
       var marker = '/* Add Component LESS Above (Do not remove this line) */';
-      appLess = appLess.replace(marker, '@import "' + this.prompts.path + this.prompts.name + '.less";' + "\n" + marker);
+      appLess = appLess.replace(marker, '@import "' + this.prompts.path + this.prompts.name + '.modal.less";' + "\n" + marker);
       this.fs.write('app/app.less', appLess);
     },
 
     modalJs: function() {
       this.fs.copyTpl(
         this.templatePath('modal.js'),
-        this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.js'),
+        this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.modal.js'),
         this.prompts
       );
     },
 
     modalTest: function() {
       this.fs.copyTpl(
-        this.templatePath('modal-spec.js'),
-        this.destinationPath('app/' + this.prompts.path + this.prompts.name + '-spec.js'),
+        this.templatePath('modal.spec.js'),
+        this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.modal.spec.js'),
         this.prompts
       );
     },
@@ -87,7 +87,7 @@ module.exports = yeoman.generators.Base.extend({
     modalHtml: function() {
       this.fs.copyTpl(
           this.templatePath('modal.html'),
-          this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.html'),
+          this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.modal.html'),
           this.prompts
         );
     },
@@ -95,7 +95,7 @@ module.exports = yeoman.generators.Base.extend({
     modalLess: function() {
       this.fs.copyTpl(
           this.templatePath('modal.less'),
-          this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.less'),
+          this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.modal.less'),
           this.prompts
         );
     }
@@ -103,6 +103,17 @@ module.exports = yeoman.generators.Base.extend({
 
   install: {},
 
-  end: {}
+  end: function() {
+    console.log('');
+    console.log('  Open this modal by using ' + chalk.bold('angular-ui-bootstrap') + ' module\'s ' + chalk.bold('$modal') + ' service:');
+    console.log('');
+    console.log('  $modal.open({');
+    console.log('      templateUrl: \'' + this.prompts.path + this.prompts.name + '.modal.html' + '\',');
+    console.log('      controller: \''+ _.capitalize(_.camelCase(this.prompts.name)) +'Controller\'');
+    console.log('  }).result.then(function(result){');
+    console.log('      //do something with the result');
+    console.log('  });');
+    console.log('');
+  }
 
 });
