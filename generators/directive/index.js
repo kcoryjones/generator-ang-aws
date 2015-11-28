@@ -95,7 +95,7 @@ module.exports = yeoman.generators.Base.extend({
 
     directiveTest: function() {
       this.fs.copyTpl(
-        this.templatePath('directive-spec.js'),
+        this.templatePath('directive.spec.js'),
         this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.directive.spec.js'),
         this.prompts
       );
