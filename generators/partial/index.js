@@ -64,7 +64,7 @@ module.exports = yeoman.generators.Base.extend({
     updateIndexHtml: function() {
       var indexHtml = this.fs.read('app/index.html');
       var marker = '<!-- Add New Component JS Above (Do not remove this line) -->';
-      indexHtml = indexHtml.replace(marker, '<script src="' + this.prompts.path + this.prompts.name + '.js"></script>' + "\n  " + marker);
+      indexHtml = indexHtml.replace(marker, '<script src="' + this.prompts.path + this.prompts.name + '.controller.js"></script>' + "\n  " + marker);
       this.fs.write('app/index.html', indexHtml);
     },
 
@@ -73,7 +73,7 @@ module.exports = yeoman.generators.Base.extend({
       var marker = '/* Add New States Above (Do not remove this line) */';
       var state = "$stateProvider.state('" + this.prompts.name + "', {" + "\n" +
         "   url: '" + this.prompts.routeUrl + "'," + "\n" +
-        "   templateUrl: '" + this.prompts.path + this.prompts.name + ".html'" + "\n" +
+        "   templateUrl: '" + this.prompts.path + this.prompts.name + ".controller.html'" + "\n" +
         " });";
       appJs = appJs.replace(marker, state + "\n  " + marker);
       this.fs.write('app/app.js', appJs);
@@ -82,22 +82,22 @@ module.exports = yeoman.generators.Base.extend({
     updateAppLess: function() {
       var appLess = this.fs.read('app/app.less');
       var marker = '/* Add Component LESS Above (Do not remove this line) */';
-      appLess = appLess.replace(marker, '@import "' + this.prompts.path + this.prompts.name + '.less";' + "\n" + marker);
+      appLess = appLess.replace(marker, '@import "' + this.prompts.path + this.prompts.name + '.controller.less";' + "\n" + marker);
       this.fs.write('app/app.less', appLess);
     },
 
     partialJs: function() {
       this.fs.copyTpl(
         this.templatePath('partial.js'),
-        this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.js'),
+        this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.controller.js'),
         this.prompts
       );
     },
 
     partialTest: function() {
       this.fs.copyTpl(
-        this.templatePath('partial-spec.js'),
-        this.destinationPath('app/' + this.prompts.path + this.prompts.name + '-spec.js'),
+        this.templatePath('partial.spec.js'),
+        this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.controller.spec.js'),
         this.prompts
       );
     },
