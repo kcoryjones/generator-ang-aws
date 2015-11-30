@@ -52,22 +52,22 @@ module.exports = yeoman.generators.Base.extend({
     updateIndexHtml: function() {
       var indexHtml = this.fs.read('app/index.html');
       var marker = '<!-- Add New Component JS Above (Do not remove this line) -->';
-      indexHtml = indexHtml.replace(marker, '<script src="' + this.prompts.path + this.prompts.name + '.js"></script>' + "\n  " + marker);
+      indexHtml = indexHtml.replace(marker, '<script src="' + this.prompts.path + this.prompts.name + '.service.js"></script>' + "\n  " + marker);
       this.fs.write('app/index.html', indexHtml);
     },
     
     serviceJs: function() {
       this.fs.copyTpl(
         this.templatePath('service.js'),
-        this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.js'),
+        this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.service.js'),
         this.prompts
       );
     },
 
     serviceTest: function() {
       this.fs.copyTpl(
-        this.templatePath('service-spec.js'),
-        this.destinationPath('app/' + this.prompts.path + this.prompts.name + '-spec.js'),
+        this.templatePath('service.spec.js'),
+        this.destinationPath('app/' + this.prompts.path + this.prompts.name + '.service.spec.js'),
         this.prompts
       );
     }
