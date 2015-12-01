@@ -68,15 +68,15 @@ module.exports = yeoman.generators.Base.extend({
       this.fs.write('app/index.html', indexHtml);
     },
 
-    updateAppJs: function() {
-      var appJs = this.fs.read('app/app.js');
+    updateAppRoutesJs: function() {
+      var appRoutesJs = this.fs.read('app/app.routes.js');
       var marker = '/* Add New States Above (Do not remove this line) */';
       var state = "$stateProvider.state('" + this.prompts.name + "', {" + "\n" +
         "   url: '" + this.prompts.routeUrl + "'," + "\n" +
         "   templateUrl: '" + this.prompts.path + this.prompts.name + ".controller.html'" + "\n" +
         " });";
-      appJs = appJs.replace(marker, state + "\n  " + marker);
-      this.fs.write('app/app.js', appJs);
+      appRoutesJs = appRoutesJs.replace(marker, state + "\n  " + marker);
+      this.fs.write('app/app.routes.js', appRoutesJs);
     },
 
     updateAppLess: function() {
