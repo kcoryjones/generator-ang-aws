@@ -82,7 +82,7 @@ module.exports = yeoman.generators.Base.extend({
     updateAppLess: function() {
       var appLess = this.fs.read('app/app.less');
       var marker = '/* Add Component LESS Above (Do not remove this line) */';
-      appLess = appLess.replace(marker, '@import "' + this.prompts.path + this.prompts.name + '.controller.less";' + "\n" + marker);
+      appLess = appLess.replace(marker, '@import "' + this.prompts.path + this.prompts.name + '.less";' + "\n" + marker);
       this.fs.write('app/app.less', appLess);
     },
 
