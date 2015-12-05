@@ -3,7 +3,7 @@
 
     angular
         .module('<%= appname %>')
-        .controller('<% _.capitalize(_.camelCase(name)) %>Controller', Controller);
+        .controller('<%= _.capitalize(_.camelCase(name)) %>Controller', Controller);
 
     Controller.$inject = [/*'dependencies'*/];
 
