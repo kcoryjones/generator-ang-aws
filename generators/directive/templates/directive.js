@@ -3,12 +3,12 @@
 
     angular
         .module('<%= appname %>')
-        .directive('<%= _.camelCase(name) %>', <%= _.camelCase(name) %>);
+        .directive('<%= _.camelCase(name) %>', directive);
 
     directive.$inject = [/*'dependencies'*/];
 
     /* @ngInject */
-    function <%= _.camelCase(name) %>(/*dependencies*/) {
+    function directive() {
         // Usage:
         //
         // Creates:
