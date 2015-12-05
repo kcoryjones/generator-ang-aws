@@ -18,8 +18,7 @@
             controller: Controller,
             controllerAs: 'vm',
             link: link,
-            <% if (directiveType=='simple') { %>restrict: 'A'<% } %>
-            <% if (directiveType=='complex') { %>scope: {},
+            <% if (directiveType=='simple') { %>restrict: 'A'<% } %><% if (directiveType=='complex') { %>scope: {},
             templateUrl: '<%= path %><%= name %>.directive.html'<% } %>
         };
         return directive;
