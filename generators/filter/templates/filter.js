@@ -3,9 +3,9 @@
 
     angular
         .module('<%= appname %>')
-        .filter('<%= _.camelCase(name) %>', <%= _.camelCase(name) %>);
+        .filter('<%= _.camelCase(name) %>', filter);
 
-    function <%= _.camelCase(name) %>() {
+    function filter() {
         return <%= _.camelCase(name) %>Filter;
 
         ////////////////
