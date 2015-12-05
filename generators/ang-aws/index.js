@@ -370,16 +370,7 @@ module.exports = yeoman.generators.Base.extend({
           });
         });
       });
-    },
-
-    angAwsJs: function() {
-      this.fs.copyTpl(
-        this.templatePath('angAws.js'),
-        this.destinationPath('app/service/angAws.js'),
-        this.prompts
-      );
     }
-
   },
 
   install: function() {
