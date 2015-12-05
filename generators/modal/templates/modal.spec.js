@@ -6,7 +6,7 @@ describe('<%= _.capitalize(_.camelCase(name)) %>Controller', function() {
 
   beforeEach(inject(function($rootScope, $controller) {
     scope = $rootScope.$new();
-    ctrl = $controller('<%= _capitalize(_.camelCase(name)) %>Controller', {$scope: scope});
+    ctrl = $controller('<%= _.capitalize(_.camelCase(name)) %>Controller', {$scope: scope});
   }));
 
   it('should ...', inject(function() {
