@@ -4,9 +4,12 @@
     angular
         .module('<%= appname %>')
         .directive('<%= _.camelCase(name) %>', directive);
+    
+    directive.$inject = [/*'dependencies'*/];
 
+    /* @ngInject */
     function directive() {
-        // Usage:
+        // Usage    :
         //
         // Creates:
         //
