@@ -5,9 +5,6 @@
         .module('<%= appname %>')
         .directive('<%= _.camelCase(name) %>', directive);
 
-    directive.$inject = [/*'dependencies'*/];
-
-    /* @ngInject */
     function directive() {
         // Usage:
         //
@@ -26,6 +23,8 @@
         function link(scope, element, attrs) {
         }
     }
+
+    Controller.$inject = [/*'dependencies'*/];
 
     /* @ngInject */
     function Controller() {
