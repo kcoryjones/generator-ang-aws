@@ -7,6 +7,7 @@
     
     appRun.$inject = ['$rootScope'];
 
+    /* @ngInject */
     function appRun($rootScope) {
 
         $rootScope.safeApply = function(fn) {

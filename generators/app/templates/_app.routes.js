@@ -7,6 +7,7 @@
 
     config.$inject = ['$stateProvider','$urlRouterProvider','$locationProvider'];
 
+    /* @ngInject */
     function config($stateProvider, $urlRouterProvider, $locationProvider) {
 
         /* Add New States Above (Do not remove this line) */

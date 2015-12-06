@@ -15,9 +15,10 @@
             controller: Controller,
             controllerAs: 'vm',
             link: link,
-            <% if (directiveType=='simple') { %>restrict: 'A'<% } %><% if (directiveType=='complex') { %>scope: {},
+            <% if (directiveType=='simple') { %>restrict: 'A'<% } %><% if (directiveType=='complex') { %>scope: true,
             templateUrl: '<%= path %><%= name %>.directive.html'<% } %>
         };
+        
         return directive;
 
         function link(scope, element, attrs) {
@@ -28,6 +29,6 @@
 
     /* @ngInject */
     function Controller() {
-
+        var vm = this;
     }
 })();
