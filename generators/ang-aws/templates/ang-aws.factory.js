@@ -3,19 +3,22 @@
 
     angular
         .module('<%= _.camelCase(appname) %>')
-        .factory('angAws', angAws);
+        .factory('angAws', factory);
 
-    angAws.$inject = ['$q'];
+    factory.$inject = ['$q'];
     
-    function angAws($q) {
+    /* @ngInject */
+    function factory($q) {
         var service = {
             api: api
         };
 
         return service;
 
+        ////////////////
+
         //invoke lambda api function specifically
-        function api = function(payload) {
+        function api(payload) {
             var deferred = $q.defer();
             
             lambdaInvoke('<%= _.camelCase(appname) %>-api', payload).then(function(response) {
@@ -28,7 +31,7 @@
         };
 
         //invoke any lambda function
-        function lambdaInvoke = function(funcName, payload) {
+        function lambdaInvoke(funcName, payload) {
             AWS.config.credentials = new AWS.CognitoIdentityCredentials({
                 IdentityPoolId: '<%= identityPoolId %>'
             });

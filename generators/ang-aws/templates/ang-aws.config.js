@@ -3,21 +3,24 @@
 
     angular
         .module('<%= _.camelCase(appname) %>')
-        .config(angAwsConfig);
+        .config(config);
 
-    angAwsConfig.$inject = ['$httpProvider', 'angAws'];
+    config.$inject = ['$httpProvider'];
 
-    function angAwsConfig($httpProvider, angAws) {
+    /* @ngInject */
+    function config($httpProvider) {
         var intercept = false; //true for production
 
         //register interceptor
-        $httpProvider.interceptors.push(function(angAws) {
+        $httpProvider.interceptors.push(function() {
             if (intercept) {
+                
                 return {
                     'request': request,
                     'response': response
                 };
             }
+            
             return {};
         });
 
@@ -25,14 +28,16 @@
             if (config.url.substring(0, 17) == "192.168.7.24:3002") {
                 alert('request intercepted');
             }
+
             return config;
-        }
+        };
 
         function response(response) {
             if (response.config.url.substring(0, 17) == "192.168.7.24:3002") {
                 alert('response intercepted');
             }
+
             return response;
-        }
+        };
     }
 })();

@@ -333,7 +333,7 @@ module.exports = yeoman.generators.Base.extend({
                             indexHtml = indexHtml.replace(marker, 
                               '<script src="service/ang-aws.factory.js"></script>' + "\n  " +
                               '<script src="service/ang-aws.config.js"></script>' + "\n  " +
-                              '<script src="service/api.js"></script>' + "\n  " +
+                              '<script src="service/api.factory.js"></script>' + "\n  " +
                               marker);
                             that.fs.write('app/index.html', indexHtml);
                             // write angAws service
@@ -353,8 +353,8 @@ module.exports = yeoman.generators.Base.extend({
                             // write api service
                             that.log('writing api service...');
                             that.fs.copyTpl(
-                              that.templatePath('api.js'),
-                              that.destinationPath('app/service/api.js'),
+                              that.templatePath('api.factory.js'),
+                              that.destinationPath('app/service/api.factory.js'),
                               that.prompts
                             );
                             that.log('All done!');

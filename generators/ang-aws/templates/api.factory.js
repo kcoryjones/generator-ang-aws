@@ -3,29 +3,32 @@
 
     angular
         .module('<%= _.camelCase(appname) %>')
-        .factory('api', api);
+        .factory('api', factory);
 
-    api.$inject = ['$http'];
+    factory.$inject = ['$http'];
 
-    function api($http) {
+    /* @ngInject */
+    function factory($http) {
     	var url  = 'http://192.168.7.24:3002';
 		var service = {
             url: url,
             put: put,
             get: get,
             post: post,
-            delete: delete,
+            delete: del,
             login: login
         };
 
         return service;
 
+        ////////////////
+
         //handles all methods
-        function call = function(method, endpoint, data) {
+        function call(method, endpoint, data) {
 			var config = {
 				cache: false,
 				method: method,
-				url: api.defaults.url + endpoint
+				url: url + endpoint
 			}
 			if (data) {
 				config.data = data;
@@ -34,29 +37,28 @@
 		};
 
 		//restful methods
-		function put = function(model, item) {
+		function put(model, item) {
 			var endpoint = '/api/rest/' + model + '/' + item.id;
-			return api.call('PUT', endpoint, item);
+			return call('PUT', endpoint, item);
 		};
-		function get = function(model, hash) {
+		function get(model, hash) {
 			var endpoint = '/api/rest/' + model;
 			if (hash)
 				endpoint += '/' + hash;
-			return api.call('GET', endpoint, null);
+			return call('GET', endpoint, null);
 		};
-		function post = function(model, hash, range) {
+		function post(model, hash, range) {
 			var endpoint = '/api/rest/' + model;
-			return api.call('POST', endpoint, item);
+			return call('POST', endpoint, item);
 		};
-		function delete = function(model, item) {
+		function del(model, item) {
 			var endpoint = '/api/rest/' + model + '/' + item.id;
-			return api.call('DELETE', endpoint, item);
+			return call('DELETE', endpoint, item);
 		};
 
 		//login call
-		api.login = function(user) {
-			return api.call('POST', '/api/login', user);
-		}
-
+		function login(user) {
+			return call('POST', '/api/login', user);
+		};
     }
 })();
